@@ -12,7 +12,10 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/TBS-EACPD/zeus",
-    packages=setuptools.find_packages(),
+    packages=[
+        # find_packages() also includes extraneous stuff, like testing and django_sample
+        package for package in setuptools.find_packages() if package.startswith("zeus")
+    ],
     install_requires=[],
     tests_require=['django'],
     classifiers=[

@@ -55,27 +55,38 @@ python setup.py sdist
 How to install this locally without pypi (test this right before deploying a new version)
 
 
-```bash
-# in other project
-pip install mypackage --no-index --no-cache --find-links file:///abs_path/to/dir/dist
-
-
-pip install zeus --no-index --no-cache --find-links file:///Users/acl/Documents/code/zeus/dist
-
-```
-
 **editable mode**
 
 When refreshing a local package, you'll also need `pip uninstall -y zeus` in between installs. This is super annoying, fortunately there's an easier way for python to link directly to the sources so this isn't necessary:
 
 ```bash
-pip install -e file:///absolute/path/to/zeus/
+pip uninstall zeus
 
-# or replace zeus in requirements.txt with the following (recommended)
+# then replace zeus in requirements.txt with the following
 # -e file:///absolute/path/to/zeus/
 
-# to uninstall:
+```
+
+**locally packaged mode**
+
+Once you've got something that work in editable mode, try packaging the app
+
+```bash
+# in zeus project
+python setup.py sdist
+
+# in consumer project
 pip uninstall -y zeus
+# replace the zeus entry in requirements.txt with 
+#file:///absolute/path/to/zeus/
+```
+
+**Installing from git with branch (primary way)**
+
+the entry in `requirements.txt` should look like this 
+
+```ini
+git+git://github.com/TBS-EACPD/zeus@master#egg=zeus
 ```
 
 
