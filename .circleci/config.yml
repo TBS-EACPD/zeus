@@ -1,0 +1,66 @@
+gcloud_auth: &gcloud_auth
+  auth:
+    username: _json_key
+    password: $GCLOUD_JSON_AUTH
+
+version: 2
+
+jobs:
+  setup:
+    docker:
+      - image: gcr.io/big-coil-207017/titan-deploy:latest
+        <<: *gcloud_auth
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - restore_cache:
+          key: deps1-{{ checksum "dev-requirements.txt" }}-{{ checksum "requirements.txt" }}
+      - run: python3 -m venv env
+      - run: env/bin/pip3 install -r dev-requirements.txt
+      - save_cache:
+          key: deps1-{{ checksum "dev-requirements.txt" }}-{{ checksum "requirements.txt" }}
+          paths:
+            - "env"
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+  test:
+    docker:
+      - image: gcr.io/big-coil-207017/titan-ci:latest
+        <<: *gcloud_auth
+    steps:
+      - attach_workspace:
+          at: ./
+      - run: pg_ctl -w -D ../pgsql-data start
+      - run: createdb zeus-dev
+      # - run: psql "dbname=postgres" -c "CREATE ROLE app with login;"
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+      - run: env/bin/coverage run --source=. ./manage.py test
+      - run: env/bin/coverage xml
+      - run: bash <(curl -s https://codecov.io/bash) -X html
+  
+  format_check:
+    docker:
+      - image: gcr.io/big-coil-207017/titan-ci:latest
+        <<: *gcloud_auth
+    steps:
+      - attach_workspace:
+          at: ./
+      - run: env/bin/black --check ./
+
+workflows:
+  version: 2
+  setup_test:
+    jobs:
+      - setup
+      - test:
+          requires:
+            - setup
+      - format_check:
+          requires:
+            - setup

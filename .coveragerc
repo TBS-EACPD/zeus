@@ -1,0 +1,12 @@
+[run]
+omit =
+    venv/*
+    env/*
+    */migrations/*
+    */scripts/*
+    tests/*
+    htmlcov/
+
+plugins =
+    # allows coverage for templates
+    django_coverage_plugin
