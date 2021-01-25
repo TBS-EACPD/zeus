@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+
 def group_by_iteritems(iterable, key=lambda x: x):
     d = defaultdict(list)
     for item in iterable:
@@ -8,4 +9,4 @@ def group_by_iteritems(iterable, key=lambda x: x):
 
 
 def group_by(iterable, key):
-    return dict(group_by_iteritems(iterable,key))
+    return dict(group_by_iteritems(iterable, key))
