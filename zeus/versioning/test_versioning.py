@@ -43,7 +43,7 @@ def common(register_model):
     # This can be any module in <installed_app>
     # when extracting to own package
     # tests will against on an 'example project' with an empty app
-    module = "django_sample.models.__init__"
+    module = "django_sample.models"
 
     class MyGroupLookup(models.Model):
         __module__ = module
