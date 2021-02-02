@@ -1,4 +1,3 @@
-
 from collections import defaultdict
 
 import graphene
@@ -26,6 +25,7 @@ from zeus.changelog.arbitrary_version_pair_fetcher import ArbitraryVersionPairFe
 from django_sample.models import Author, Book
 
 PAGE_SIZE = 250
+
 
 def get_changelog_page_size():
     return PAGE_SIZE
@@ -109,6 +109,6 @@ class RootQuery(graphene.ObjectType):
 
 schema = graphene.Schema(query=RootQuery, auto_camelcase=False)
 
+
 class QueryExecutor(InternalQueryExecutorBase):
     schema = schema
-

@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-import pytest 
+import pytest
 
 from pytest_django.asserts import assertInHTML
 
@@ -8,11 +8,13 @@ from .example_schema import QueryExecutor
 
 from django_sample.models import Author, Book, Tag
 
+
 @pytest.fixture
 def gql():
     executor = QueryExecutor()
-    def _exec_gql(query,**variables):
-        return executor.execute_query(query,variables=variables)
+
+    def _exec_gql(query, **variables):
+        return executor.execute_query(query, variables=variables)
 
     return _exec_gql
 
@@ -46,18 +48,15 @@ base_query = """
     }
 """
 
-def test_changelog(gql):
-    data = gql(base_query,page_num=1)
 
+def test_changelog(gql):
+    data = gql(base_query, page_num=1)
 
 
 def test_entire_graphql_changelog(gql):
     author1 = Author.objects.create(first_name="john", last_name="smith")
     author2 = Author.objects.create(first_name="jane", last_name="smith")
-    book1 = Book.objects.create(
-        author=author1  ,
-        title="john's diary"
-    )
+    book1 = Book.objects.create(author=author1, title="john's diary")
 
     book1_v1 = book1.versions.last()
 
@@ -70,10 +69,10 @@ def test_entire_graphql_changelog(gql):
     book1_v2 = book1.versions.last()
 
     with patch("zeus.changelog.tests.example_schema.PAGE_SIZE", 2):
-        data = gql( base_query,page_num=1 )
+        data = gql(base_query, page_num=1)
 
     edit_entries = data["changelog"]["changelog_entries"]
-    assert len(edit_entries) == 2 
+    assert len(edit_entries) == 2
 
     assert edit_entries[0]["version"]["instance"] == book1_v2
     assert len(edit_entries[0]["diffs"]) == 2
@@ -85,9 +84,7 @@ def test_entire_graphql_changelog(gql):
         "author",
     }
     # they have field objects as well
-    assert diffs_by_fields["title"][
-        "field"
-    ] == Book._meta.get_field("title")
+    assert diffs_by_fields["title"]["field"] == Book._meta.get_field("title")
 
     assert edit_entries[1]["version"]["instance"] == book1_v1
 
@@ -107,26 +104,25 @@ def test_m2m_entries(gql):
 
     book = Book.objects.create(
         author=Author.objects.create(first_name="john", last_name="smith"),
-        title="john's diary"
+        title="john's diary",
     )
-    book.tags.add(t1,t2)
+    book.tags.add(t1, t2)
 
     book_v1 = book.versions.last()
     book.reset_version_attrs()
-
 
     book.tags.add(t3)
     book.tags.remove(t1)
     book.save()
 
     book_v2 = book.versions.last()
-    data = gql( base_query,page_num=1 )
+    data = gql(base_query, page_num=1)
     edit_entries = data["changelog"]["changelog_entries"]
     assert len(edit_entries) == 3
 
     assert edit_entries[0]["version"]["instance"] == book_v2
     assert len(edit_entries[0]["diffs"]) == 1
-    
+
     m2m_diff = edit_entries[0]["diffs"][0]
     assert m2m_diff["action"] == "Edited"
     assert m2m_diff["field_name"] == "tags"
@@ -140,8 +136,3 @@ def test_m2m_entries(gql):
     assertInHTML("<p class=''>Tag2</p>", m2m_diff["diffed_combined"])
     assertInHTML("<p class='diff_sub'>Tag1</p>", m2m_diff["diffed_combined"])
     assertInHTML("<p class='diff_add'>Tag3</p>", m2m_diff["diffed_combined"])
-
-
-
-
-
