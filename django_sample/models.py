@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.utils import timezone
 
 from zeus.versioning import VersionModel
@@ -13,6 +14,14 @@ class CustomVersionModel(VersionModel):
         default=timezone.now, verbose_name="hypothetical last edit date",
     )
 
+    edited_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+
 
 class Author(models.Model):
     first_name = models.CharField(max_length=100)
@@ -23,6 +32,10 @@ class AuthorVersion(CustomVersionModel):
 
 class Tag(models.Model):
     name = models.CharField(max_length=250)
+    
+    def __str__(self):
+        return self.name
+
 
 class Book(models.Model):
     author = models.ForeignKey(Author, related_name="books", on_delete=models.CASCADE)
