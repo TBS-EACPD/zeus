@@ -68,7 +68,7 @@ def test_entire_graphql_changelog(gql):
 
     book1_v2 = book1.versions.last()
 
-    with patch("zeus.changelog.tests.example_schema.PAGE_SIZE", 2):
+    with patch("zeus.changelog.graphql.util.get_changelog_page_size", lambda _: 2):
         data = gql(base_query, page_num=1)
 
     edit_entries = data["changelog"]["changelog_entries"]
