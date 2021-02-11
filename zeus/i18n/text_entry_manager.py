@@ -13,7 +13,7 @@ class TextEntryManager:
         self._text_entries = {}
         for filename in self.paths:
             f = open(filename, "r")
-            yaml_dict = yaml.load(f)
+            yaml_dict = yaml.load(f, Loader=yaml.SafeLoader)
             self._add_text_entries(yaml_dict)
             f.close()
 
