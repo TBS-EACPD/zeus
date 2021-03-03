@@ -1,7 +1,6 @@
 import json
 
 from django.db import models
-from django.utils.decorators import classproperty
 from django.db.models.base import ModelBase
 from django.utils import timezone
 from django.db.models.signals import post_save, m2m_changed
