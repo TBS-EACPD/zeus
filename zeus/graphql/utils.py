@@ -1,6 +1,8 @@
 import inspect
 import functools
 
+from promise import is_thenable
+
 from django.db.models import Model
 
 import graphene
@@ -27,7 +29,7 @@ def non_serializable_field(func):
     """
 
     @functools.wraps(func)
-    async def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs):
         ret = func(*args, **kwargs)
 
         info = args[1]
@@ -36,9 +38,8 @@ def non_serializable_field(func):
             info = args[2]
 
         if info.context.requires_serializable:
-            if inspect.isawaitable(ret):
-                val = await ret
-                return _stringify_internal_python_value(val)
+            if is_thenable(ret):
+                return ret.then(lambda val: _stringify_internal_python_value(val))
 
             return _stringify_internal_python_value(ret)
 
@@ -50,6 +51,56 @@ def non_serializable_field(func):
 class HasNonSerializableRecordMixin(graphene.ObjectType):
     record = graphene.Field(NonSerializable)
 
-    @non_serializable_field
     def resolve_record(self, _info):
         return self
+
+
+def genfunc_to_prom(func):
+    """
+        turns a function returning a generator into a function returning a promise
+    """
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        generator = func(*args, **kwargs)
+        if not inspect.isgenerator(generator):
+            return generator
+
+        return promise_from_generator(generator)
+
+    return wrapper
+
+
+def promise_from_generator(generator):
+    """
+        assumes the generator is not yet started
+    """
+    try:
+        first_val = next(generator)
+    except StopIteration as e:
+        next_val = e.value
+        return next_val
+
+    return _ongoing_gen_to_prom(generator, first_val)
+
+
+def _ongoing_gen_to_prom(generator, current_val=None):
+    """
+        recursive helper
+    """
+    if inspect.isgenerator(current_val):
+        current_val = promise_from_generator(current_val)
+    if not is_thenable(current_val):
+        # this must be the final return
+        return current_val
+
+    def resolve_next(resolved_current):
+        try:
+            next_val = generator.send(resolved_current)
+        except StopIteration as e:
+            next_val = e.value
+            return next_val
+
+        return _ongoing_gen_to_prom(generator, next_val)
+
+    return current_val.then(resolve_next)

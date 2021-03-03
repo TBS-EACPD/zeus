@@ -6,10 +6,10 @@ from django.core.exceptions import SuspiciousOperation
 from django.conf import settings
 
 from graphene_django.views import GraphQLView
-from graphql.execution.executors.asyncio import AsyncioExecutor
 
 
 from .graphql_context import GraphQLContext
+from .middleware import get_middleware
 
 
 class GraphiQLViewBase(GraphQLView):
@@ -21,17 +21,14 @@ class GraphiQLViewBase(GraphQLView):
     schema = None
 
     def __init__(self, *args, executor=None, **kwargs):
-        self.loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(self.loop)
-        executor = AsyncioExecutor()
-        super().__init__(*args, **kwargs, executor=executor)
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def as_view(cls, *args, **kwargs):
         new_kwargs = {
             "schema": cls.schema,
             "graphiql": True,
-            "middleware": [],
+            "middleware": get_middleware(),
             **kwargs,
         }
         return super().as_view(*args, **new_kwargs)
@@ -48,7 +45,6 @@ class GraphiQLViewBase(GraphQLView):
 
     def execute_graphql_request(self, *args, **kwargs):
         result = super().execute_graphql_request(*args, **kwargs)
-        self.loop.close()
         if result.errors:
             self._log_exceptions(result.errors)
         return result

@@ -2,7 +2,7 @@
 -r requirements.txt
 coverage==5.1
 django-coverage-plugin==1.8.0
-django-debug-toolbar==2.1
+django-debug-toolbar==3.2
 django-graphiql-debug-toolbar==0.1.4
 black==19.10b0
 pylint==2.5.2

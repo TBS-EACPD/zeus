@@ -117,4 +117,3 @@ def create_standard_changelog_graphql_mixin(
         (graphene.ObjectType,),
         {field_name: field, f"resolve_{field_name}": staticmethod(resolver)},
     )
-

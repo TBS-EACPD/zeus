@@ -1,33 +1,28 @@
-import asyncio
-from inspect import isawaitable
+from inspect import isgeneratorfunction
 
-from aiodataloader import DataLoader as BaseAsyncDataLoader
+from promise import Promise, is_thenable
+from promise.dataloader import DataLoader
+
+from .utils import genfunc_to_prom, promise_from_generator
 
 
-class AsyncDataLoader(BaseAsyncDataLoader):
-    async def batch_load_fn(self, keys):
-        result = self.batch_load(keys)
-        if isawaitable(result):
-            return await result
+class BaseDataloader(DataLoader):
+    # shortcut for instance methods to turn generator instances into promises
+    def batch_load_fn(self, keys):
+        func = self.batch_load
+        if isgeneratorfunction(func):
+            func = genfunc_to_prom(func)
+
+        result = func(keys)
+
+        if not is_thenable(result):
+            # batch_load_fn must always return a promise
+            return Promise.resolve(result)
+
         return result
 
-    def reset_loop(self, loop):
-        """
-            instances each hold a ref to the event loop
-            to allow re-using an instance (and more importantly, its cache) accross loops, we must change the loop ref
-            In addition, every cached value is wrapped in a future, which also contains a ref to the loop.
-            so we start with a new cache, and prime it with all the old results
-        """
-        self.loop = loop
-        old_cache = self._cache
-        self._cache = {}
-        for k, v in old_cache.items():
-            if asyncio.isfuture(v):
-                v = v.result()
-            self.prime(k, v)
 
-
-class AsyncSingletonDataLoader(AsyncDataLoader):
+class SingletonDataLoader(BaseDataloader):
     dataloader_instance_cache = None
 
     def __new__(cls, dataloader_instance_cache):
@@ -43,7 +38,7 @@ class AsyncSingletonDataLoader(AsyncDataLoader):
             super().__init__()
 
 
-class AbstractModelByIdLoader(AsyncSingletonDataLoader):
+class AbstractModelByIdLoader(SingletonDataLoader):
     model = None  # override this part
 
     @classmethod

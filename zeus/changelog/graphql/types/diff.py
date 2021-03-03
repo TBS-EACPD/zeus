@@ -1,5 +1,6 @@
-import asyncio
 import inspect
+
+from promise import Promise
 
 from django.utils.html import escape
 from django.db.models import ForeignKey, ManyToManyField
@@ -12,6 +13,7 @@ from zeus.changelog.text import tm
 from zeus.graphql.utils import (
     non_serializable_field,
     NonSerializable,
+    genfunc_to_prom,
 )
 from zeus.graphql.dataloader import PrimaryKeyDataLoaderFactory
 
@@ -98,32 +100,37 @@ class DeleteDiff:
 
 
 class AsyncDiffObject(DiffObject):
-    async def _compute_diffs(self):
+    def _compute_diffs(self):
         raise NotImplementedError()
 
-    async def _get_diffs(self):
+    @genfunc_to_prom
+    def _get_diffs(self):
         if hasattr(self, "_diff_result"):
             return self._diff_result
 
-        diffs = await self._compute_diffs()
+        diffs = yield self._compute_diffs()
         self._diff_result = diffs
         return diffs
 
-    async def get_combined_diff(self):
-        diffs = await self._get_diffs()
+    @genfunc_to_prom
+    def get_combined_diff(self):
+        diffs = yield self._get_diffs()
         return diffs[0]
 
-    async def get_before_diff(self):
-        diffs = await self._get_diffs()
+    @genfunc_to_prom
+    def get_before_diff(self):
+        diffs = yield self._get_diffs()
         return diffs[1]
 
-    async def get_after_diff(self):
-        diffs = await self._get_diffs()
+    @genfunc_to_prom
+    def get_after_diff(self):
+        diffs = yield self._get_diffs()
         return diffs[2]
 
 
 class M2MDiffObject(AsyncDiffObject):
-    async def _compute_diffs(self):
+    @genfunc_to_prom
+    def _compute_diffs(self):
         prev_id_list = self.previous_version.get_m2m_ids(self.field.name)
         current_id_list = self.current_version.get_m2m_ids(self.field.name)
 
@@ -133,9 +140,11 @@ class M2MDiffObject(AsyncDiffObject):
         )
         related_dataloader = related_dataloader_cls(self.dataloader_cache)
 
-        prev_instances, current_instances = await asyncio.gather(
-            related_dataloader.load_many(prev_id_list),
-            related_dataloader.load_many(current_id_list),
+        prev_instances, current_instances = yield Promise.all(
+            [
+                related_dataloader.load_many(prev_id_list),
+                related_dataloader.load_many(current_id_list),
+            ]
         )
 
         get_name = lambda inst: inst.name
@@ -148,7 +157,8 @@ class M2MDiffObject(AsyncDiffObject):
 
 
 class ForeignKeyDiffObject(AsyncDiffObject):
-    async def _compute_diffs(self):
+    @genfunc_to_prom
+    def _compute_diffs(self):
         prev_db_value = self.previous_version.serializable_value(self.field.name)
         current_db_value = self.current_version.serializable_value(self.field.name)
 
@@ -160,12 +170,12 @@ class ForeignKeyDiffObject(AsyncDiffObject):
 
         if prev_db_value is None:
             previous_instance = None
-            current_instance = await dataloader.load(current_db_value)
+            current_instance = yield dataloader.load(current_db_value)
         elif current_db_value is None:
-            previous_instance = await dataloader.load(prev_db_value)
+            previous_instance = yield dataloader.load(prev_db_value)
             current_instance = None
         else:
-            previous_instance, current_instance = await dataloader.load_many(
+            previous_instance, current_instance = yield dataloader.load_many(
                 [prev_db_value, current_db_value]
             )
 
@@ -215,7 +225,8 @@ def get_str_val(fetched_field_value):
         return escape(fetched_field_value.__str__())
 
 
-async def m2m_display_value(version, field_obj, dataloader_cache):
+@genfunc_to_prom
+def m2m_display_value(version, field_obj, dataloader_cache):
     id_list = version.get_m2m_ids(field_obj.name)
     if not id_list:
         return tm("empty")
@@ -224,13 +235,14 @@ async def m2m_display_value(version, field_obj, dataloader_cache):
         related_model
     )
     related_dataloader = related_dataloader_cls(dataloader_cache)
-    related_instances = await related_dataloader.load_many(id_list)
+    related_instances = yield related_dataloader.load_many(id_list)
 
     sorted_names = sorted([inst.name for inst in related_instances])
     return "".join([f"<p>{name}</p>" for name in sorted_names])
 
 
-async def foreign_key_display_value(version, field_obj, dataloader_cache):
+@genfunc_to_prom
+def foreign_key_display_value(version, field_obj, dataloader_cache):
     related_id = version.serializable_value(field_obj.name)
     if related_id is None:
         return tm("empty")
@@ -240,7 +252,7 @@ async def foreign_key_display_value(version, field_obj, dataloader_cache):
     )
     related_dataloader = related_dataloader_cls(dataloader_cache)
 
-    related_instance = await related_dataloader.load(related_id)
+    related_instance = yield related_dataloader.load(related_id)
     return get_str_val(related_instance)
 
 
@@ -276,7 +288,6 @@ class Diff(graphene.ObjectType):
     field = NonSerializable()
 
     @staticmethod
-    @non_serializable_field
     def resolve_field(parent, _info):
         return parent.field
 

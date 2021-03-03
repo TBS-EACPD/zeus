@@ -1,15 +1,12 @@
 import inspect
 import logging
-import asyncio
 import traceback
 
-
 from graphene.test import Client
-from graphql.execution.executors.asyncio import AsyncioExecutor
 
-from .dataloader import AsyncDataLoader
 
 from .graphql_context import GraphQLContext
+from .middleware import get_middleware
 
 
 class GraphQLExecutionErrorSet(Exception):
@@ -35,11 +32,8 @@ class RaiseExceptionsMiddleware:
 
         raise error
 
-    async def resolve(self, next, root, info, **kwargs):
-        ret = next(root, info, **kwargs).catch(self.on_error)
-        if inspect.isawaitable(ret):
-            return await ret
-        return ret
+    def resolve(self, next, root, info, **kwargs):
+        return next(root, info, **kwargs).catch(self.on_error)
 
 
 class InternalQueryExecutorBase:
@@ -62,23 +56,9 @@ class InternalQueryExecutorBase:
         if context is None:
             context = GraphQLContext(self.dataloaders, requires_serializable=False)
 
-        middleware = [
-            RaiseExceptionsMiddleware(),
-        ]
+        middleware = [RaiseExceptionsMiddleware(), *get_middleware()]
 
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-
-        for dataloader_instance in self.dataloaders.values():
-            if isinstance(dataloader_instance, AsyncDataLoader):
-                dataloader_instance.reset_loop(loop)
-
-        executor = AsyncioExecutor()
-
-        resp = self.client.execute(
-            query, root, context, variables, middleware=middleware, executor=executor,
-        )
-        loop.close()
+        resp = self.client.execute(query, root, context, variables, middleware=middleware)
 
         if "errors" in resp:
             err = GraphQLExecutionErrorSet(resp["errors"])
