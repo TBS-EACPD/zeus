@@ -40,7 +40,7 @@ jobs:
           root: ./
           paths:
             - ./
-      - run: env/bin/coverage run --source=. ./manage.py test
+      - run: env/bin/coverage run --source=./zeus/ ./manage.py test
       - run: env/bin/coverage xml
       - run: bash <(curl -s https://codecov.io/bash) -X html
   
