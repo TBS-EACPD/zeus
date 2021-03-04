@@ -4,7 +4,7 @@ omit =
     env/*
     */migrations/*
     */scripts/*
-    tests/*
+    */tests/*
     htmlcov/
 
 plugins =
