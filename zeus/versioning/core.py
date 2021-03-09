@@ -1,14 +1,12 @@
 import json
 
 from django.db import models
+from django.db.models import F, Manager, Model, OuterRef, QuerySet, Subquery
 from django.db.models.base import ModelBase
+from django.db.models.signals import m2m_changed, post_save
 from django.utils import timezone
-from django.db.models.signals import post_save, m2m_changed
-from django.db.models import Model, OuterRef, Subquery, F, QuerySet, Manager
 
 # other imports, to remove
-
-from django.utils import timezone
 
 
 class VersioningException(Exception):
@@ -29,6 +27,8 @@ def find_m2m_field(from_class, to_class):
 
 def on_m2m_change(instance, action, model, pk_set, **_kwargs):
     field = find_m2m_field(instance.__class__, model)
+
+    test = "test"
 
     hidden_attr = f"_{field.name}_m2m_ids"
     if not hasattr(instance, hidden_attr):
