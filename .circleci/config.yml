@@ -52,6 +52,7 @@ jobs:
       - attach_workspace:
           at: ./
       - run: venv/bin/black --check ./
+      - run: venv/bin/isort . -c
 
 workflows:
   version: 2
