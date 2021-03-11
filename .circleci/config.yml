@@ -16,12 +16,12 @@ jobs:
           at: ./
       - restore_cache:
           key: deps1-{{ checksum "dev-requirements.txt" }}-{{ checksum "requirements.txt" }}
-      - run: python3 -m venv env
-      - run: env/bin/pip3 install -r dev-requirements.txt
+      - run: python3 -m venv venv
+      - run: venv/bin/pip3 install -r dev-requirements.txt
       - save_cache:
           key: deps1-{{ checksum "dev-requirements.txt" }}-{{ checksum "requirements.txt" }}
           paths:
-            - "env"
+            - "venv"
       - persist_to_workspace:
           root: ./
           paths:
@@ -40,8 +40,8 @@ jobs:
           root: ./
           paths:
             - ./
-      - run: env/bin/coverage run --source=./zeus/ ./manage.py test
-      - run: env/bin/coverage xml
+      - run: venv/bin/coverage run --source=./zeus/ ./manage.py test
+      - run: venv/bin/coverage xml
       - run: bash <(curl -s https://codecov.io/bash) -X html
   
   format_check:
@@ -51,7 +51,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ./
-      - run: env/bin/black --check ./
+      - run: venv/bin/black --check ./
 
 workflows:
   version: 2
