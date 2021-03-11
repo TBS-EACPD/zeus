@@ -15,11 +15,11 @@ jobs:
       - attach_workspace:
           at: ./
       - restore_cache:
-          key: deps1-{{ checksum "dev-requirements.txt" }}-{{ checksum "requirements.txt" }}
+          key: deps-{{ checksum "dev-requirements.txt" }}-{{ checksum "requirements.txt" }}
       - run: python3 -m venv venv
       - run: venv/bin/pip3 install -r dev-requirements.txt
       - save_cache:
-          key: deps1-{{ checksum "dev-requirements.txt" }}-{{ checksum "requirements.txt" }}
+          key: deps-{{ checksum "dev-requirements.txt" }}-{{ checksum "requirements.txt" }}
           paths:
             - "venv"
       - persist_to_workspace:
