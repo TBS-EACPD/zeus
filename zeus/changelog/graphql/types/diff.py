@@ -1,23 +1,17 @@
 import inspect
 
-from promise import Promise
-
-from django.utils.html import escape
 from django.db.models import ForeignKey, ManyToManyField
-
 from django.utils.functional import cached_property
+from django.utils.html import escape
 
 import graphene
 
-from zeus.changelog.text import tm
-from zeus.graphql.utils import (
-    non_serializable_field,
-    NonSerializable,
-    genfunc_to_prom,
-)
-from zeus.graphql.dataloader import PrimaryKeyDataLoaderFactory
+from promise import Promise
 
-from zeus.changelog.diff_utils import text_compare_inline, list_diff
+from zeus.changelog.diff_utils import list_diff, text_compare_inline
+from zeus.changelog.text import tm
+from zeus.graphql.dataloader import PrimaryKeyDataLoaderFactory
+from zeus.graphql.utils import NonSerializable, genfunc_to_prom, non_serializable_field
 
 
 # this is used by the parent resolver and fed to the below graphene type

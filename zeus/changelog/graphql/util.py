@@ -1,10 +1,11 @@
 from collections import defaultdict
-import graphene
-from graphene import List, Int, String, DateTime, Boolean
 
-from zeus.changelog.util import get_diffable_fields_for_model
+import graphene
+from graphene import Boolean, DateTime, Int, List, String
+
 from zeus.changelog.consecutive_versions_fetcher import ConsecutiveVersionsFetcher
 from zeus.changelog.graphql.types import ChangelogPage
+from zeus.changelog.util import get_diffable_fields_for_model
 
 
 def create_model_enum_type(models, enum_name="ChangelogModels"):

@@ -29,8 +29,8 @@ class TextWatcher:
             # the other one changes PID and has an env RUN_MAIN=True
             return
 
-        from watchdog.observers import Observer
         from watchdog.events import RegexMatchingEventHandler
+        from watchdog.observers import Observer
 
         watcher = self
 

@@ -1,7 +1,5 @@
 import difflib
-
 from itertools import groupby
-
 
 ADD_HTML_CLASS = "diff_add"
 RM_HTML_CLASS = "diff_sub"

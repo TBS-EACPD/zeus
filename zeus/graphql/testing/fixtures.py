@@ -1,6 +1,5 @@
 import pytest
-
-from promise import set_default_scheduler, get_default_scheduler
+from promise import get_default_scheduler, set_default_scheduler
 from promise.schedulers.asyncio import AsyncioScheduler
 
 

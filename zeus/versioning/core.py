@@ -1,14 +1,12 @@
 import json
 
 from django.db import models
+from django.db.models import F, Manager, Model, OuterRef, QuerySet, Subquery
 from django.db.models.base import ModelBase
+from django.db.models.signals import m2m_changed, post_save
 from django.utils import timezone
-from django.db.models.signals import post_save, m2m_changed
-from django.db.models import Model, OuterRef, Subquery, F, QuerySet, Manager
 
 # other imports, to remove
-
-from django.utils import timezone
 
 
 class VersioningException(Exception):

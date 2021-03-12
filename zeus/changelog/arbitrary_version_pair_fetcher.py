@@ -1,16 +1,16 @@
 from functools import reduce
 
-from django.utils.functional import cached_property
 from django.db.models import (
-    Subquery,
-    OuterRef,
-    Value,
-    CharField,
-    Q,
-    F,
     BooleanField,
+    CharField,
+    F,
     IntegerField,
+    OuterRef,
+    Q,
+    Subquery,
+    Value,
 )
+from django.utils.functional import cached_property
 
 from .util import get_diffable_fields_for_model
 

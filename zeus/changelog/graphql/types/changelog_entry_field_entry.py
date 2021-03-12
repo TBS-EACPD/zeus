@@ -1,15 +1,15 @@
-from django.db.models import ManyToManyField, ForeignKey
+from django.db.models import ForeignKey, ManyToManyField
 
 import graphene
-from graphene import List, String, DateTime
-
-from zeus.graphql.utils import non_serializable_field, NonSerializable
+from graphene import DateTime, List, String
 
 from zeus.changelog.util import get_diffable_fields_for_model
+from zeus.graphql.utils import NonSerializable, non_serializable_field
+
 from .diff import (
     Diff,
-    get_field_diff_for_version_pair,
     get_display_value,
+    get_field_diff_for_version_pair,
     is_field_different_accross_versions,
 )
 

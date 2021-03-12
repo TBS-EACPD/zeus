@@ -1,12 +1,11 @@
 from unittest.mock import patch
 
 import pytest
-
 from pytest_django.asserts import assertInHTML
 
-from .example_schema import QueryExecutor
-
 from django_sample.models import Author, Book, Tag
+
+from .example_schema import QueryExecutor
 
 
 @pytest.fixture

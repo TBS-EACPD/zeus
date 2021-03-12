@@ -1,12 +1,11 @@
-import logging
 import asyncio
+import logging
 import traceback
 
-from django.core.exceptions import SuspiciousOperation
 from django.conf import settings
+from django.core.exceptions import SuspiciousOperation
 
 from graphene_django.views import GraphQLView
-
 
 from .graphql_context import GraphQLContext
 from .middleware import get_middleware

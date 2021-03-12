@@ -1,17 +1,13 @@
 from collections import defaultdict
 
 import pytest
-
 from promise import Promise
 
-from zeus.vanilla import group_by, flatten
-from zeus.graphql.dataloader import PrimaryKeyDataLoaderFactory
-from zeus.graphql.dataloader import SingletonDataLoader
-
-from zeus.django.query_counting import assert_max_queries
-
-from django_sample.data_factories import BookFactory, AuthorFactory, TagFactory
+from django_sample.data_factories import AuthorFactory, BookFactory, TagFactory
 from django_sample.models import Book, Tag
+from zeus.django.query_counting import assert_max_queries
+from zeus.graphql.dataloader import PrimaryKeyDataLoaderFactory, SingletonDataLoader
+from zeus.vanilla import flatten, group_by
 
 
 def test_pk_loader_factory(dataloader_test):

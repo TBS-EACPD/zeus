@@ -1,7 +1,7 @@
 import graphene
 
-from zeus.graphql.utils import non_serializable_field, NonSerializable
 from zeus.graphql.types.version import Version
+from zeus.graphql.utils import NonSerializable, non_serializable_field
 
 
 class HasNonSerializableRecordMixin(graphene.ObjectType):

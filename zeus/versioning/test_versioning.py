@@ -1,10 +1,10 @@
 import importlib
-import pytest
 
-from django.db import connection, transaction
-from django.db import models
+from django.db import connection, models, transaction
 from django.db.models.base import ModelBase
 from django.forms import ModelForm
+
+import pytest
 
 from zeus.versioning.core import VersionModel
 
