@@ -1,1 +1,1 @@
-from .core import VersionModel, HistoryManager, HistoryQueryset
+from .core import HistoryManager, HistoryQueryset, VersionModel

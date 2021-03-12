@@ -1,11 +1,11 @@
-import inspect
 import functools
-
-from promise import is_thenable
+import inspect
 
 from django.db.models import Model
 
 import graphene
+
+from promise import is_thenable
 
 
 class NonSerializable(graphene.Scalar):

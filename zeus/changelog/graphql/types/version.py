@@ -1,11 +1,9 @@
+from django.contrib.auth import get_user_model
+
 import graphene
 
-from django.contrib.auth import get_user_model
-from zeus.graphql.utils import (
-    non_serializable_field,
-    NonSerializable,
-)
 from zeus.graphql.dataloader import PrimaryKeyDataLoaderFactory
+from zeus.graphql.utils import NonSerializable, non_serializable_field
 
 
 class Version(graphene.ObjectType):

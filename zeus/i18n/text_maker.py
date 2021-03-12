@@ -1,11 +1,10 @@
 import sys
 
 from django.conf import settings
-
-from django.utils.translation import get_language, gettext_lazy as _
-from django.utils.safestring import mark_safe
 from django.utils.functional import lazy
-
+from django.utils.safestring import mark_safe
+from django.utils.translation import get_language
+from django.utils.translation import gettext_lazy as _
 
 from zeus.markdown import markdown, sanitize_html
 

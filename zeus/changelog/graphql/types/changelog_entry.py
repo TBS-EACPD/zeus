@@ -1,14 +1,14 @@
-from django.db.models import ManyToManyField, ForeignKey
+from django.db.models import ForeignKey, ManyToManyField
 
 import graphene
-from graphene import List, String, DateTime
+from graphene import DateTime, List, String
 
-from zeus.graphql.utils import non_serializable_field, NonSerializable
-from zeus.graphql.types.version import Version
 from zeus.changelog.util import get_diffable_fields_for_model
+from zeus.graphql.types.version import Version
+from zeus.graphql.utils import NonSerializable, non_serializable_field
 
-from .diff import Diff, CreateDiff, get_field_diff_for_version_pair
 from .changelog_entry_field_entry import ChangelogEntryFieldEntry
+from .diff import CreateDiff, Diff, get_field_diff_for_version_pair
 
 
 class ChangelogEntry(graphene.ObjectType):

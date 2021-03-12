@@ -1,13 +1,12 @@
 from inspect import isgenerator
 
+from graphql.execution.middleware import make_it_promise
 from promise import is_thenable
 
-from graphql.execution.middleware import make_it_promise
-
 from .utils import (
-    promise_from_generator,
-    _stringify_internal_python_value,
     NonSerializable,
+    _stringify_internal_python_value,
+    promise_from_generator,
 )
 
 

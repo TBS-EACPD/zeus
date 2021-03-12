@@ -1,5 +1,5 @@
 import graphene
-from graphene import List, Boolean, Int
+from graphene import Boolean, Int, List
 
 from .changelog_entry import ChangelogEntry
 

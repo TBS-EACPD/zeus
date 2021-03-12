@@ -4,7 +4,6 @@ import traceback
 
 from graphene.test import Client
 
-
 from .graphql_context import GraphQLContext
 from .middleware import get_middleware
 

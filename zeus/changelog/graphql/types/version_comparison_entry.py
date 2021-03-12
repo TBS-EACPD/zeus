@@ -1,18 +1,14 @@
-from django.db.models import ManyToManyField, ForeignKey
+from django.db.models import ForeignKey, ManyToManyField
 
 import graphene
-from graphene import List, String, DateTime
-
-from zeus.graphql.utils import (
-    non_serializable_field,
-    NonSerializable,
-)
-from zeus.graphql.dataloader import PrimaryKeyDataLoaderFactory
+from graphene import DateTime, List, String
 
 from zeus.changelog.graphql.types.version import Version
 from zeus.changelog.util import get_diffable_fields_for_model
+from zeus.graphql.dataloader import PrimaryKeyDataLoaderFactory
+from zeus.graphql.utils import NonSerializable, non_serializable_field
 
-from .diff import Diff, CreateDiff, get_field_diff_for_version_pair, DeleteDiff
+from .diff import CreateDiff, DeleteDiff, Diff, get_field_diff_for_version_pair
 
 
 class VersionComparisonEntry(graphene.ObjectType):
