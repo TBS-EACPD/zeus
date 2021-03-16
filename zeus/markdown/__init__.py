@@ -3,19 +3,7 @@ from django.utils.safestring import mark_safe
 import bleach
 import mistune
 
-ALLOWED_TAGS = [
-    "a",
-    "b",
-    "em",
-    "i",
-    "li",
-    "ol",
-    "p",
-    "strong",
-    "ul",
-    "br",
-    "div"
-]
+ALLOWED_TAGS = ["a", "b", "em", "i", "li", "ol", "p", "strong", "ul", "br", "div"]
 
 
 def sanitize_html(html_str, allow_weird_characters=False):
