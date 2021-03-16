@@ -14,6 +14,7 @@ ALLOWED_TAGS = [
     "strong",
     "ul",
     "br",
+    "div"
 ]
 
 
