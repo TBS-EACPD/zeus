@@ -24,6 +24,7 @@ exclude = '''
 
 profile = "black"
 include_trailing_comma = true
+line_length = 90
 known_django = "django"
 known_graphene = "graphene"
 sections=[ "FUTURE", "STDLIB", "DJANGO", "GRAPHENE", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER" ]
