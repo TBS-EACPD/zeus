@@ -1,7 +1,7 @@
 gcloud_auth: &gcloud_auth
   auth:
     username: _json_key
-    password: $GCLOUD_JSON_AUTH
+    password: $GCR_JSON_AUTH
 
 version: 2
 
