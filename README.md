@@ -1,7 +1,7 @@
 # `zeus` 
 
 
-## This isn't ready yet!
+## Docs are still lagging...
 
 ## What is this?
 
@@ -25,19 +25,30 @@ from zeus.vanilla import is_ascii
 - `group_by`
 
 
-### `versioning` (coming soon)
+### `versioning`
 
-Subclassing `versioning.core.VersionModel` will create a history model that is automatically updated on each save.
+versioning model behaviour has no external dependencies.
+
+Subclassing `versioning.core.VersionModel` will create a history model that is automatically updated on each save. See the [example](./django_sample/models.py) 
+
+### `changelog` (in progress)
+
+changelogs requires many external dependencies: graphene, aiodataloader, graphene-django
+
+creating changelogs currently require a lot of boilerplate code. 
+
+TODO: create a function that abstracts away all the graphql and allows querying paginated changelog data for specific models, fields, users and dates. 
+
 
 ### `i18n`
 
-Depends on django, bleach and mistune
+Depends on django, bleach, mistune and pyyaml
 
 - `TextMakerCreator(global_keys,text_file_paths)`
 - `WatchingTextMakerCreator((global_keys,text_file_paths)`
   - if using `runserver` and `settings.DEBUG=True`, requires watchdog
 
-### markdown
+### `markdown`
 
 requires django, bleach and mistune to be installed
 
