@@ -13,8 +13,8 @@ def test_edit_book_has_edited_by_prop(client):
     a_book = Book.objects.create(author=author, title="name1")
     a_book.reset_version_attrs()
 
-    url = reverse("edit-book",args=[a_book.pk])
-    client.post(url,data={"title": "name2"})
+    url = reverse("edit-book", args=[a_book.pk])
+    client.post(url, data={"title": "name2"})
 
     assert a_book.versions.count() == 2
     assert a_book.versions.first().edited_by is None

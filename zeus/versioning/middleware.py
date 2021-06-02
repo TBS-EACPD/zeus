@@ -2,9 +2,11 @@ from django.conf import settings
 from django.db import connections
 from django.db.models import signals
 
+
 def mark_whodid(user, sender, instance, **kwargs):
     if hasattr(sender, "edited_by"):
         instance.edited_by = user
+
 
 class WhodidMiddleware:
     def __init__(self, get_response):
