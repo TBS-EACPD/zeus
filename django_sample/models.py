@@ -20,6 +20,18 @@ class CustomVersionModel(VersionModel):
     )
 
 
+class CustomVersionModelWithEditor(CustomVersionModel):
+    class Meta(CustomVersionModel.Meta):
+        abstract = True
+
+    edited_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        on_delete=models.SET_DEFAULT,
+        related_name="+",
+    )
+
+
 class Author(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -42,5 +54,5 @@ class Book(models.Model):
     tags = models.ManyToManyField(Tag)
 
 
-class BookVersion(CustomVersionModel):
+class BookVersion(CustomVersionModelWithEditor):
     live_model = Book
