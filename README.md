@@ -111,3 +111,14 @@ The development environment should similar to the OG titan
 1. Install postgres postgres 9.6 and configure your `$PATH`
 2. Set up the virtual environment 
 3. run `createdb zeus-dev`
+
+
+# Releases
+
+At this point, consumers just use git reference in their requirements.txt to install zeus. Instead of tagging commits with _git tags_, which github can't protect, we use branches. To create a release, create a new branch `release-<MAJOR>-<MINOR>-<PATCH>` and push it up. 
+
+If you're adding a feature, the recommended flow is to 
+
+1. Open up a feature branch (e.g. branch `my-feature`)
+2. get your PR approved and merged into master
+3. Create a release branch from master and push it up. 
