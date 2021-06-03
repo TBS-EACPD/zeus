@@ -1,7 +1,7 @@
 import urllib
 
-from django.http.response import HttpResponseRedirect
 from django.conf import settings
+from django.http.response import HttpResponseRedirect
 
 
 class MustBeLoggedInMiddleware:

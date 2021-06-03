@@ -24,4 +24,3 @@ def test_authenticated_request_is_ok(client, data_url):
     client.force_login(user)
     resp = client.get(data_url)
     assert resp.status_code == 200
-
