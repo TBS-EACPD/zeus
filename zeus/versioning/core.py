@@ -213,7 +213,7 @@ class VersionModelMeta(ModelBase):
 
     @staticmethod
     def _get_versioned_fields(live_model, version_cls):
-        tracked_fields = live_model._meta.fields
+        tracked_fields = version_cls.get_fields_to_version(live_model)
 
         versioned_fields = {}
         for field in tracked_fields:
@@ -258,6 +258,11 @@ class VersionModel(models.Model, metaclass=VersionModelMeta):
     objects = HistoryManager()
 
     system_date = models.DateTimeField(default=timezone.now)
+
+    @classmethod
+    def get_fields_to_version(cls, live_model):
+        # override to include/exclude individual fields from the live model
+        return live_model._meta.fields
 
     @classmethod
     def build_from_original(cls, live_instance, m2m_dict=None):
