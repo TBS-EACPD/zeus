@@ -97,9 +97,10 @@ pip uninstall -y zeus
 the entry in `requirements.txt` should look like this 
 
 ```ini
-git+git://github.com/TBS-EACPD/zeus@master#egg=zeus
+git+git://github.com/TBS-EACPD/zeus@release-0.1#egg=zeus
 ```
 
+To update zeus, you'll need to `pip uninstall -y zeus` before re-running your `pip install -r requirements.txt`  
 
 
 # Development
