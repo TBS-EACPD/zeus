@@ -1,12 +1,12 @@
 import graphene
-from zeus.graphql.internal_query_executor_base import InternalQueryExecutorBase
+
 from zeus.changelog.graphql.util import (
     convert_enum_list_to_dict,
     create_model_enum_type,
     create_model_field_enum_type,
     create_standard_changelog_graphql_mixin,
 )
-
+from zeus.graphql.internal_query_executor_base import InternalQueryExecutorBase
 
 base_query = """
     query ChangelogQuery(

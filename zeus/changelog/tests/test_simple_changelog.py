@@ -1,5 +1,4 @@
 from django_sample.models import Author, Book, Tag
-
 from zeus.changelog.simple_changelog import create_simple_changelog
 
 
@@ -45,4 +44,3 @@ def test_simple_changelog():
     assert edit_entries[0]["model_name"] == "book"
 
     assert data["has_next_page"] == True
-
