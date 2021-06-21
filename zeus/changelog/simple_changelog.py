@@ -29,6 +29,7 @@ base_query = """
             start_date: $start_date,
             end_date: $end_date,
         ){
+            num_pages
             has_next_page
             changelog_entries {
                 model_name
