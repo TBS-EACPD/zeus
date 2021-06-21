@@ -18,6 +18,8 @@ setuptools.setup(
         for package in setuptools.find_packages()
         if package.startswith("zeus")
     ],
+    package_data={"": ["**/*.text.yaml"]},
+    include_package_data=True,
     install_requires=[],
     tests_require=["django"],
     classifiers=[
