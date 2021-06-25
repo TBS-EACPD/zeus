@@ -213,7 +213,7 @@ class VersionModelMeta(ModelBase):
 
     @staticmethod
     def _get_versioned_fields(live_model, version_cls):
-        tracked_fields = version_cls.get_fields_to_version(live_model)
+        tracked_fields = version_cls.get_fields_to_version()
 
         versioned_fields = {}
         for field in tracked_fields:
@@ -225,7 +225,7 @@ class VersionModelMeta(ModelBase):
     @staticmethod
     def _create_m2m_fields(version_cls, live_model):
         m2m_fields_to_add = {}
-        for field in version_cls.get_m2m_fields_to_version(live_model):
+        for field in version_cls.get_m2m_fields_to_version():
             new_field = models.TextField(default="[]")
             m2m_fields_to_add[field.name] = new_field
 
@@ -260,20 +260,20 @@ class VersionModel(models.Model, metaclass=VersionModelMeta):
     system_date = models.DateTimeField(default=timezone.now)
 
     @classmethod
-    def get_fields_to_version(cls, live_model):
+    def get_fields_to_version(cls):
         # override to include/exclude individual fields from the live model
-        return live_model._meta.fields
+        return cls.live_model._meta.fields
 
     @classmethod
-    def get_m2m_fields_to_version(cls, live_model):
+    def get_m2m_fields_to_version(cls):
         # override to include/exclude individual fields from the live model
-        return live_model._meta.many_to_many
+        return cls.live_model._meta.many_to_many
 
     @classmethod
     def build_from_original(cls, live_instance, m2m_dict=None):
         instance_dict = {
             f.attname: live_instance.serializable_value(f.name)
-            for f in cls.live_model._meta.fields
+            for f in cls.get_fields_to_version()
             if not f.name in ["id"]
         }
 
