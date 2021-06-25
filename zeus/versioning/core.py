@@ -260,20 +260,20 @@ class VersionModel(models.Model, metaclass=VersionModelMeta):
     system_date = models.DateTimeField(default=timezone.now)
 
     @classmethod
-    def get_fields_to_version(cls, live_model):
+    def get_fields_to_version(cls):
         # override to include/exclude individual fields from the live model
-        return live_model._meta.fields
+        return cls.live_model._meta.fields
 
     @classmethod
-    def get_m2m_fields_to_version(cls, live_model):
+    def get_m2m_fields_to_version(cls):
         # override to include/exclude individual fields from the live model
-        return live_model._meta.many_to_many
+        return cls.live_model._meta.many_to_many
 
     @classmethod
     def build_from_original(cls, live_instance, m2m_dict=None):
         instance_dict = {
             f.attname: live_instance.serializable_value(f.name)
-            for f in cls.live_model._meta.fields
+            for f in cls.get_fields_to_version()
             if not f.name in ["id"]
         }
 
