@@ -213,7 +213,7 @@ class VersionModelMeta(ModelBase):
 
     @staticmethod
     def _get_versioned_fields(live_model, version_cls):
-        tracked_fields = version_cls.get_fields_to_version(live_model)
+        tracked_fields = version_cls.get_fields_to_version()
 
         versioned_fields = {}
         for field in tracked_fields:
@@ -225,7 +225,7 @@ class VersionModelMeta(ModelBase):
     @staticmethod
     def _create_m2m_fields(version_cls, live_model):
         m2m_fields_to_add = {}
-        for field in version_cls.get_m2m_fields_to_version(live_model):
+        for field in version_cls.get_m2m_fields_to_version():
             new_field = models.TextField(default="[]")
             m2m_fields_to_add[field.name] = new_field
 
