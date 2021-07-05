@@ -7,18 +7,8 @@ from django_sample.models import Author, Book, Tag
 
 from .example_schema import QueryExecutor
 
-
-@pytest.fixture
-def gql():
-    executor = QueryExecutor()
-
-    def _exec_gql(query, **variables):
-        return executor.execute_query(query, variables=variables)
-
-    return _exec_gql
-
-
-base_query = """
+base_query = QueryExecutor().build_query(
+    """
     query ChangelogQuery($page_num :Int!) {
         changelog(
             page_num:$page_num,
@@ -46,13 +36,14 @@ base_query = """
         }
     }
 """
+)
 
 
-def test_changelog(gql):
-    data = gql(base_query, page_num=1)
+def test_changelog():
+    data = base_query(page_num=1)
 
 
-def test_entire_graphql_changelog(gql):
+def test_entire_graphql_changelog():
     author1 = Author.objects.create(first_name="john", last_name="smith")
     author2 = Author.objects.create(first_name="jane", last_name="smith")
     book1 = Book.objects.create(author=author1, title="john's diary")
@@ -68,7 +59,7 @@ def test_entire_graphql_changelog(gql):
     book1_v2 = book1.versions.last()
 
     with patch("zeus.changelog.graphql.util.get_changelog_page_size", lambda _: 2):
-        data = gql(base_query, page_num=1)
+        data = base_query(page_num=1)
 
     edit_entries = data["changelog"]["changelog_entries"]
     assert len(edit_entries) == 2
@@ -96,7 +87,7 @@ def test_entire_graphql_changelog(gql):
     assert data["changelog"]["has_next_page"] == True
 
 
-def test_m2m_entries(gql):
+def test_m2m_entries():
     t1 = Tag.objects.create(name="Tag1")
     t2 = Tag.objects.create(name="Tag2")
     t3 = Tag.objects.create(name="Tag3")
@@ -115,7 +106,7 @@ def test_m2m_entries(gql):
     book.save()
 
     book_v2 = book.versions.last()
-    data = gql(base_query, page_num=1)
+    data = base_query(page_num=1)
     edit_entries = data["changelog"]["changelog_entries"]
     assert len(edit_entries) == 3
 
