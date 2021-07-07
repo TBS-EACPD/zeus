@@ -4,6 +4,10 @@ import traceback
 
 from graphene.test import Client
 
+from graphql.error import GraphQLError
+from graphql.language.base import parse
+from graphql.validation import validate
+
 from .graphql_context import GraphQLContext
 from .middleware import get_middleware
 
@@ -63,3 +67,13 @@ class InternalQueryExecutorBase:
             err = GraphQLExecutionErrorSet(resp["errors"])
             raise err
         return resp["data"]
+
+    def build_query(self, query):
+        validation_errors = validate(self.schema, parse(query))
+        if validation_errors:
+            raise GraphQLError(validation_errors)
+
+        def execute(*, context=None, **variables):
+            return self.execute_query(query, context, variables=variables)
+
+        return execute
