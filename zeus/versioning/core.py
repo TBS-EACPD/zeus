@@ -81,9 +81,9 @@ class HistoryQueryset(QuerySet):
         prev_version_id_subquery = Subquery(
             another_qs.filter(
                 eternal_id=OuterRef("eternal_id"),
-                system_date__lt=OuterRef("system_date"),
+                business_date__lt=OuterRef("business_date"),
             )
-            .order_by("-system_date")
+            .order_by("-business_date")
             .values("id")[:1]
         )
         return self.annotate(previous_version_id=prev_version_id_subquery)
@@ -91,7 +91,7 @@ class HistoryQueryset(QuerySet):
     def with_most_recent_version_id(self):
         most_recent_version_id_subquery = Subquery(
             self.model.objects.filter(eternal_id=OuterRef("eternal_id"))
-            .order_by("-system_date")
+            .order_by("-business_date")
             .values("pk")[:1]
         )
         return self.annotate(most_recent_version_id=most_recent_version_id_subquery)
