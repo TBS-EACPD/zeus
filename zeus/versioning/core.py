@@ -1,7 +1,5 @@
-import json
-
 from django.db import models
-from django.db.models import F, Manager, Model, OuterRef, QuerySet, Subquery
+from django.db.models import F, Manager, OuterRef, QuerySet, Subquery
 from django.db.models.base import ModelBase
 from django.db.models.signals import m2m_changed, post_save
 from django.utils import timezone
@@ -226,7 +224,7 @@ class VersionModelMeta(ModelBase):
     def _create_m2m_fields(version_cls, live_model):
         m2m_fields_to_add = {}
         for field in version_cls.get_m2m_fields_to_version():
-            new_field = models.TextField(default="[]")
+            new_field = models.JSONField()
             m2m_fields_to_add[field.name] = new_field
 
         return m2m_fields_to_add
@@ -306,12 +304,9 @@ class VersionModel(models.Model, metaclass=VersionModelMeta):
 
         version.save()
 
-    def get_m2m_ids(self, key):
-        return json.loads(getattr(self, key) or [])
-
     @staticmethod
     def serialize_m2m_ids(pk_list):
-        return json.dumps(sorted(pk_list))
+        return sorted(pk_list)
 
     def set_m2m(self, field, pk_set):
         setattr(self, field.name, self.serialize_m2m_ids(pk_set))
