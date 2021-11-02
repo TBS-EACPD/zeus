@@ -1,6 +1,6 @@
 import inspect
 
-from django.db.models import ForeignKey, ManyToManyField
+from django.db.models import ForeignKey, JSONField, ManyToManyField
 from django.utils.functional import cached_property
 from django.utils.html import escape
 
@@ -125,8 +125,8 @@ class AsyncDiffObject(DiffObject):
 class M2MDiffObject(AsyncDiffObject):
     @genfunc_to_prom
     def _compute_diffs(self):
-        prev_id_list = self.previous_version.get_m2m_ids(self.field.name)
-        current_id_list = self.current_version.get_m2m_ids(self.field.name)
+        prev_id_list = self.previous_version.serializable_value(self.field.name)
+        current_id_list = self.current_version.serializable_value(self.field.name)
 
         related_model = self.field.related_model
         related_dataloader_cls = PrimaryKeyDataLoaderFactory.get_model_by_id_loader(
@@ -183,6 +183,11 @@ class ForeignKeyDiffObject(AsyncDiffObject):
 def is_field_different_accross_versions(current_version, previous_version, field_name):
     current_db_value = current_version.serializable_value(field_name)
     prev_db_value = previous_version.serializable_value(field_name)
+
+    field_obj = current_version._meta.get_field(field_name)
+    if isinstance(field_obj, JSONField):
+        return current_db_value != prev_db_value
+
     if current_db_value == prev_db_value or (
         # consider "" vs. None to be non-diff worthy
         {current_db_value, prev_db_value}.issubset({None, ""})
