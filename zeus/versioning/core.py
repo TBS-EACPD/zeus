@@ -308,6 +308,9 @@ class VersionModel(models.Model, metaclass=VersionModelMeta):
     def serialize_m2m_ids(pk_list):
         return sorted(pk_list)
 
+    def get_m2m_ids(self, key):
+        getattr(self, key)
+
     def set_m2m(self, field, pk_set):
         setattr(self, field.name, self.serialize_m2m_ids(pk_set))
         self.save()
