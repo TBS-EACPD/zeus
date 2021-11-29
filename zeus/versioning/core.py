@@ -153,6 +153,8 @@ def create_version_field_from_live_field(field):
         new_field = clone_with_unique_false(field)
         new_field.primary_key = False
 
+    new_field.choices = field.choices
+
     return name, new_field
 
 
