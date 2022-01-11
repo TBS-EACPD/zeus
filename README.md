@@ -56,7 +56,26 @@ requires django, bleach and mistune to be installed
 - `is_md_valid`
 - `sanitize_html`
 
-## How to build dist and egginfo
+## Installing
+
+
+```bash
+pip install titan-zeus
+```
+
+### Installing from git with branch 
+
+the entry in `requirements.txt` should look like this 
+
+```ini
+git+git://github.com/TBS-EACPD/zeus@release-0.1#egg=zeus
+```
+
+If you installed using git and want to update, you'll need to run `pip uninstall -y zeus` before re-running `pip install`  
+
+## Building 
+
+### How to build dist and egginfo
 
 ```bash
 # in this project:
@@ -66,7 +85,7 @@ python setup.py sdist
 How to install this locally without pypi (test this right before deploying a new version)
 
 
-**editable mode**
+### editable mode
 
 When refreshing a local package, you'll also need `pip uninstall -y zeus` in between installs. This is super annoying, fortunately there's an easier way for python to link directly to the sources so this isn't necessary:
 
@@ -78,7 +97,7 @@ pip uninstall zeus
 
 ```
 
-**locally packaged mode**
+### locally packaged mode
 
 Once you've got something that work in editable mode, try packaging the app
 
@@ -92,34 +111,10 @@ pip uninstall -y zeus
 #file:///absolute/path/to/zeus/
 ```
 
-**Installing from git with branch (primary way)**
-
-the entry in `requirements.txt` should look like this 
-
-```ini
-git+git://github.com/TBS-EACPD/zeus@release-0.1#egg=zeus
-```
-
-To update zeus, you'll need to `pip uninstall -y zeus` before re-running your `pip install -r requirements.txt`  
 
 
 # Development
 
-TODO: get postgres, CI, etc. configured in a similar fashion to titan
-
-The development environment should similar to the OG titan
-
-1. Install postgres postgres 9.6 and configure your `$PATH`
+1. Install postgres and configure your `$PATH`
 2. Set up the virtual environment 
-3. run `createdb zeus-dev`
-
-
-# Releases
-
-At this point, consumers just use git reference in their requirements.txt to install zeus. Instead of tagging commits with _git tags_, which github can't protect, we use branches. To create a release, create a new branch `release-<MAJOR>-<MINOR>-<PATCH>` and push it up. 
-
-If you're adding a feature, the recommended flow is to 
-
-1. Open up a feature branch (e.g. branch `my-feature`)
-2. get your PR approved and merged into master
-3. Create a release branch from master and push it up. 
+3. we run tests against a postgres DB, so you'll need to run `createdb zeus-dev`
