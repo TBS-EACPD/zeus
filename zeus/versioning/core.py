@@ -226,7 +226,7 @@ class VersionModelMeta(ModelBase):
     def _create_m2m_fields(version_cls, live_model):
         m2m_fields_to_add = {}
         for field in version_cls.get_m2m_fields_to_version():
-            new_field = models.JSONField()
+            new_field = models.JSONField(null=True)
             m2m_fields_to_add[field.name] = new_field
 
         return m2m_fields_to_add
