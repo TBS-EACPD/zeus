@@ -110,7 +110,7 @@ class HistoryManager(Manager):
 
 
 def m2m_default_empty_list():
-    return [] 
+    return []
 
 
 def create_version_field_from_live_field(field):
