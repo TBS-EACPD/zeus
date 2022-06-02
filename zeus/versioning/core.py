@@ -162,6 +162,12 @@ def create_version_field_from_live_field(field):
 
 def clone_with_unique_false(field):
     name, path, args, kwargs = field.deconstruct()
+
+    # auto_now can cause bugs with every new version getting a fresh new value
+    # consumers probably shoudln't version auto_now* fields anyway
+    kwargs.pop("auto_now_add", None)
+    kwargs.pop("auto_now", None)
+
     if kwargs.get("unique", False):
         new_kwargs = {
             **kwargs,
