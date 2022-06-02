@@ -1,5 +1,6 @@
 import graphene
 
+from zeus.changelog.consecutive_versions_fetcher import ConsecutiveVersionsFetcher
 from zeus.changelog.graphql.util import (
     convert_enum_list_to_dict,
     create_model_enum_type,
@@ -53,9 +54,11 @@ base_query = """
 """
 
 
-def create_simple_changelog(models, page_size=None):
+def create_simple_changelog(
+    models, page_size=None, fetcher_class=ConsecutiveVersionsFetcher
+):
     RootQuery = create_standard_changelog_graphql_mixin(
-        diffable_models=models, page_size=page_size
+        diffable_models=models, page_size=page_size, fetcher_class=fetcher_class
     )
     changelog_schema = graphene.Schema(query=RootQuery, auto_camelcase=False)
 
