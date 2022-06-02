@@ -52,6 +52,7 @@ def create_standard_changelog_graphql_mixin(
     model_fields_enum=None,
     page_size=50,
     field_name="changelog",
+    fetcher_class=ConsecutiveVersionsFetcher,
 ):
     # will use models_enum and model_fields_enum if provided, otherwise generates those
 
@@ -99,7 +100,7 @@ def create_standard_changelog_graphql_mixin(
         else:
             fields_by_model = None
 
-        fetcher = ConsecutiveVersionsFetcher(
+        fetcher = fetcher_class(
             page_size=get_changelog_page_size(page_size),
             page_num=page_num,
             models=model_classes,
