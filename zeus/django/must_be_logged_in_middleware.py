@@ -2,6 +2,7 @@ import urllib
 
 from django.conf import settings
 from django.http.response import HttpResponseRedirect
+from django.views import View
 
 
 class MustBeLoggedInMiddleware:
@@ -9,13 +10,24 @@ class MustBeLoggedInMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        return self.get_response(request)
+
+    def process_view(self, request, view_func, view_args, view_kwargs):
+        if getattr(view_func, "allow_unauthenticated", False):
+            return None
+
         if request.user.is_authenticated:
-            return self.get_response(request)
+            return None
 
         elif "/login" not in request.path.lower():
             qs_params = dict(next=request.build_absolute_uri())
             querystring = urllib.parse.urlencode(qs_params)
             return HttpResponseRedirect(f"{settings.LOGIN_URL}?{querystring}")
 
-        else:
-            return self.get_response(request)
+
+class AllowUnauthenticatedMixin(View):
+    @classmethod
+    def as_view(cls, *args, **kwargs):
+        view = super().as_view(*args, **kwargs)
+        view.allow_unauthenticated = True
+        return view
