@@ -84,6 +84,9 @@ def test_entire_graphql_changelog():
     assert edit_entries[0]["eternal"] == edit_entries[1]["eternal"] == book1
     assert edit_entries[0]["model_name"] == "book"
 
+    # test that the book's loader is used to load the live name
+    assert edit_entries[0]["live_name"] == "jane's diary (jane smith)"
+
     assert data["changelog"]["has_next_page"] == True
 
 

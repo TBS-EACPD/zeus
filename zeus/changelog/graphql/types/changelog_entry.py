@@ -48,8 +48,13 @@ class ChangelogEntry(graphene.ObjectType):
         return parent["eternal"].__class__._meta.verbose_name
 
     @staticmethod
-    def resolve_live_name(parent, _info):
+    def resolve_live_name(parent, info):
         live_obj = parent["eternal"]
+
+        if hasattr(live_obj, "changelog_live_name_loader_class"):
+            loader = live_obj.changelog_live_name_loader_class(info.context.dataloaders)
+            return loader.load(live_obj.id)
+
         if hasattr(live_obj, "name"):
             return live_obj.name
 

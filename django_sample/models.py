@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
+from zeus.graphql.dataloader import SingletonDataLoader
 from zeus.versioning import VersionModel
 
 
@@ -48,7 +49,21 @@ class Tag(models.Model):
         return self.name
 
 
+class BookNameLoader(SingletonDataLoader):
+    @staticmethod
+    def batch_load(book_ids):
+        books_with_authors = Book.objects.filter(id__in=book_ids).select_related("author")
+        by_id = {b.id: b for b in books_with_authors}
+        name_for_book = (
+            lambda b: f"{b.title} ({b.author.first_name} {b.author.last_name})"
+        )
+        return [name_for_book(by_id[book_id]) for book_id in book_ids]
+
+
 class Book(models.Model):
+
+    changelog_live_name_loader_class = BookNameLoader
+
     author = models.ForeignKey(Author, related_name="books", on_delete=models.CASCADE)
     title = models.CharField(max_length=250)
     tags = models.ManyToManyField(Tag)
