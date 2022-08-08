@@ -1,6 +1,3 @@
-import pytest
-
-
 class PytestTestRunner:
     """Runs pytest to discover and run tests."""
 
@@ -12,18 +9,33 @@ class PytestTestRunner:
         parser.add_argument(
             "-s", "--select", help="remaps to -k test-selection argument in pytest"
         )
+        parser.add_argument(
+            "--junit-xml",
+            dest="junitXml",
+            help="remaps the junit xml argument for pytest",
+        )
 
-    def __init__(self, verbosity=1, failfast=False, keepdb=True, select=None, **kwargs):
+    def __init__(
+        self,
+        verbosity=1,
+        failfast=False,
+        keepdb=True,
+        select=None,
+        junitXml=None,
+        **kwargs,
+    ):
         self.verbosity = verbosity
         self.failfast = failfast
         self.keepdb = keepdb
         self.select = select
+        self.junitXml = junitXml
 
     def run_tests(self, test_labels):
         """Run pytest and return the exitcode.
 
-    It translates some of Django's test command option to pytest's.
-    """
+        It translates some of Django's test command option to pytest's.
+        """
+        import pytest
 
         argv = []
         if self.select is not None:
@@ -38,6 +50,8 @@ class PytestTestRunner:
             argv.append("--exitfirst")
         if self.keepdb:
             argv.append("--reuse-db")
+        if self.junitXml:
+            argv.append(f"--junit-xml={self.junitXml}")
 
         argv.extend(test_labels)
         return pytest.main(argv)

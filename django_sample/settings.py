@@ -84,11 +84,11 @@ WSGI_APPLICATION = "django_sample.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "zeus-dev",
-        "USER": "",
+        "NAME": os.getenv("DB_USERNAME", "zeus-dev"),
+        "USER": os.getenv("DB_USERNAME", ""),
         "PASSWORD": "",
         "PORT": "5432",
-        "HOST": "127.0.0.1",
+        "HOST": "localhost",
         "TEST": {"NAME": "zeus-test"},
     }
 }

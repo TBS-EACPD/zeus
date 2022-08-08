@@ -1,67 +1,55 @@
-gcloud_auth: &gcloud_auth
-  auth:
-    username: _json_key
-    password: $GCR_JSON_AUTH
+version: 2.1
 
-version: 2
+commands:
+  install-packages:
+    steps:
+      - restore_cache: # **restores saved dependency cache if the Branch key template or requirements.txt files have not changed since the previous run**
+          key: deps2.1-{{ checksum "requirements-dev.txt" }}-{{ checksum "requirements.txt" }}
+      - run: pip install --upgrade pip
+      - run: # install and activate virtual environment with pip
+          name: Install python app dependencies
+          command: pip install -r requirements-dev.txt
+      - save_cache: # ** special step to save dependency cache **
+          key: deps2.1-{{ checksum "requirements-dev.txt" }}-{{ checksum "requirements.txt" }}
+          paths:
+            - "~/.cache/pip"
+            - "~/.local/bin"
+            - "~/.local/lib"
 
 jobs:
-  setup:
-    docker:
-      - image: gcr.io/big-coil-207017/titan-deploy:latest
-        <<: *gcloud_auth
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ./
-      - restore_cache:
-          key: deps-{{ checksum "dev-requirements.txt" }}-{{ checksum "requirements.txt" }}
-      - run: python3 -m venv venv
-      - run: venv/bin/pip3 install -r dev-requirements.txt
-      - save_cache:
-          key: deps-{{ checksum "dev-requirements.txt" }}-{{ checksum "requirements.txt" }}
-          paths:
-            - "venv"
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
   test:
     docker:
-      - image: gcr.io/big-coil-207017/titan-ci:latest
-        <<: *gcloud_auth
+      # python container
+      - image: cimg/python:3.8
+        environment:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: circle_test
+          DB_USERNAME: postgres
+      # Service container image
+      - image: cimg/postgres:11.12
+        environment:
+          POSTGRES_USER: postgres
     steps:
-      - attach_workspace:
-          at: ./
-      - run: pg_ctl -w -D ../pgsql-data start
-      - run: createdb zeus-dev
-      # - run: psql "dbname=postgres" -c "CREATE ROLE app with login;"
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
-      - run: venv/bin/coverage run --source=./zeus/ ./manage.py test
-      - run: venv/bin/coverage xml
+      - checkout
+      - install-packages
+      - run: coverage run --source=./zeus/ ./manage.py test --junit-xml=test_results/test.xml zeus/
+      - run: coverage xml
       - run: bash <(curl -s https://codecov.io/bash) -X html
-  
-  format_check:
+      - store_test_results:
+          path: test_results
+  formatting:
     docker:
-      - image: gcr.io/big-coil-207017/titan-ci:latest
-        <<: *gcloud_auth
+      - image: cimg/python:3.8
     steps:
-      - attach_workspace:
-          at: ./
-      - run: venv/bin/black --check ./
-      - run: venv/bin/isort . -c
+      - checkout
+      - install-packages
+      - run: black --check ./
+      - run: isort . -c
 
 workflows:
-  version: 2
-  setup_test:
+  test-workflow:
     jobs:
-      - setup
-      - test:
-          requires:
-            - setup
-      - format_check:
-          requires:
-            - setup
+      - test
+      - formatting
+
