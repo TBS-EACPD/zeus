@@ -16,7 +16,7 @@ def sanitize_html(html_str, allow_weird_characters=False):
 
 
 def is_md_valid(md_str):
-    markdown_from_src = mistune.Markdown()
+    markdown_from_src = mistune.create_markdown()
     unsanitized = markdown_from_src(str(md_str))
     sanitized = sanitize_html(unsanitized)
     return unsanitized == sanitized
@@ -25,6 +25,6 @@ def is_md_valid(md_str):
 def markdown(md_str):
     """
     mark_safe being run through bleach
-  """
-    markdown = mistune.Markdown()
+    """
+    markdown = mistune.create_markdown()
     return mark_safe(sanitize_html(markdown(str(md_str))))
