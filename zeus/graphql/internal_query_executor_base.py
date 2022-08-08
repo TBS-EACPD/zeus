@@ -21,9 +21,9 @@ class GraphQLExecutionErrorSet(Exception):
 
 class RaiseExceptionsMiddleware:
     """
-        TODO: this makes every single resolver async, which is probably a performance problem later on when we have more fields. Right now most of our resolvers are async anyway. 
+    TODO: this makes every single resolver async, which is probably a performance problem later on when we have more fields. Right now most of our resolvers are async anyway.
 
-        To fix this, we have to manually create a MiddlewareManager that conditionally wraps async resolvers (by checking asyncio.iscoroutinefunction) with async, and leaves non-async resolvers alone
+    To fix this, we have to manually create a MiddlewareManager that conditionally wraps async resolvers (by checking asyncio.iscoroutinefunction) with async, and leaves non-async resolvers alone
     """
 
     logger = logging.getLogger("django.request")
@@ -41,10 +41,10 @@ class RaiseExceptionsMiddleware:
 
 class InternalQueryExecutorBase:
     """
-        - must define class variable "schema"
+    - must define class variable "schema"
 
-        if you want to execute multiple graphQL queries against the same data-loaders
-        you must re-use instances of this class
+    if you want to execute multiple graphQL queries against the same data-loaders
+    you must re-use instances of this class
     """
 
     schema = None

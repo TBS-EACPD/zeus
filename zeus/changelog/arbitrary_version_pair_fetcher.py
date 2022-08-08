@@ -17,9 +17,9 @@ from .util import get_diffable_fields_for_model
 
 class ArbitraryVersionPairFetcher:
     """
-        given a list of queryset pairs (one pair per model)
-        outputs a list of {right_id, left_id, eternal_id, model}
-        automatically filters out record where right_id == left_id
+    given a list of queryset pairs (one pair per model)
+    outputs a list of {right_id, left_id, eternal_id, model}
+    automatically filters out record where right_id == left_id
     """
 
     def __init__(self, qs_pairs):

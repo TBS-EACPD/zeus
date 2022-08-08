@@ -13,7 +13,7 @@ from .middleware import get_middleware
 
 class GraphiQLViewBase(GraphQLView):
     """
-        - must provide class attr schema
+    - must provide class attr schema
     """
 
     logger = logging.getLogger("django.request")

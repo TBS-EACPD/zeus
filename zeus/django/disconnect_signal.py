@@ -1,5 +1,5 @@
 class disconnect_signal:
-    """ Temporarily disconnect a model from a signal """
+    """Temporarily disconnect a model from a signal"""
 
     def __init__(self, signal, receiver, sender=None, dispatch_uid=None):
         self.signal = signal
@@ -9,7 +9,9 @@ class disconnect_signal:
 
     def __enter__(self):
         self.signal.disconnect(
-            receiver=self.receiver, sender=self.sender, dispatch_uid=self.dispatch_uid,
+            receiver=self.receiver,
+            sender=self.sender,
+            dispatch_uid=self.dispatch_uid,
         )
 
     def __exit__(self, type, value, traceback):

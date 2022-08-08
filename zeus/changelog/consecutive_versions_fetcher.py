@@ -47,7 +47,7 @@ class ConsecutiveVersionsFetcher:
 
     def get_base_version_qs_for_single_model(self, live_model):
         """
-            You can override this to allow for custom extra filtering
+        You can override this to allow for custom extra filtering
         """
         history_model = live_model._history_class
         return history_model.objects.all()
@@ -166,7 +166,7 @@ class ConsecutiveVersionsFetcher:
 
     def get_fully_fetched_edit_entries(self):
         """
-            our paginated qs only hold id, previous_version_id, eternal_id and model_name in dicts
+        our paginated qs only hold id, previous_version_id, eternal_id and model_name in dicts
         """
         slim_versions = self._page_obj.object_list
         models_by_name = {m.__name__: m for m in self.models}
@@ -222,7 +222,9 @@ class ConsecutiveVersionsFetcher:
 class SingleRecordConsecutiveVersionsFetcher(ConsecutiveVersionsFetcher):
     def __init__(self, page_size, page_num, model, primary_key=None):
         super().__init__(
-            page_num=page_num, page_size=page_size, models=[model],
+            page_num=page_num,
+            page_size=page_size,
+            models=[model],
         )
         self.primary_key = primary_key
 

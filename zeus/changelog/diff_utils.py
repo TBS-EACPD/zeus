@@ -72,8 +72,8 @@ def text_compare_inline(before, after):
 
 def list_diff(before_list, after_list):
     """
-        expects 2 lists of strings whose intersections are sorted identically
-        This only ever makes sense if lists contain unique elements
+    expects 2 lists of strings whose intersections are sorted identically
+    This only ever makes sense if lists contain unique elements
     """
 
     added = set(after_list) - set(before_list)

@@ -3,14 +3,14 @@ from django.db import connection
 
 class QueryCollector:
     """
-        usage:
+    usage:
 
-        from django.db import connection
-        qc = QueryCollector()
-        with connection.execute_wrapper(qc):
-            do_queries()
-        # Now we can print the log.
-        print(qc.queries)
+    from django.db import connection
+    qc = QueryCollector()
+    with connection.execute_wrapper(qc):
+        do_queries()
+    # Now we can print the log.
+    print(qc.queries)
     """
 
     def __init__(self):
@@ -33,11 +33,11 @@ class QueryCollector:
 
 class QueryCounter:
     """
-        usage: 
-            with QueryCounter() as qc:
-                # arbitrary code that execs sql 
-            
-            assert( qc.count < 10 )
+    usage:
+        with QueryCounter() as qc:
+            # arbitrary code that execs sql
+
+        assert( qc.count < 10 )
     """
 
     def __init__(self):
@@ -58,10 +58,10 @@ class MaxQueryCountExceededError(Exception):
 
 class assert_max_queries:
     """
-        usage:
+    usage:
 
-        with assert_max_queries(n):
-            ... code_that_should_make_up_to_n_queries
+    with assert_max_queries(n):
+        ... code_that_should_make_up_to_n_queries
     """
 
     def __init__(self, max_queries: int):

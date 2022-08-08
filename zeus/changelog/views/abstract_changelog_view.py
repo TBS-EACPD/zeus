@@ -4,14 +4,14 @@ from django.views.generic import TemplateView
 
 class AbstractChangelogView(TemplateView):
     """
-        query must contain 
-            changelog(page_num,...)
-                num_pages
-                has_next_page
-                changelog_entries {
-            
-                }
+    query must contain
+        changelog(page_num,...)
+            num_pages
+            has_next_page
+            changelog_entries {
+
             }
+        }
 
     """
 

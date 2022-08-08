@@ -119,7 +119,9 @@ def create_version_field_from_live_field(field):
     ## forces uses of id as the primary key
     if name == "id":
         new_field = models.ForeignKey(
-            field.model, on_delete=models.CASCADE, related_name="versions",
+            field.model,
+            on_delete=models.CASCADE,
+            related_name="versions",
         )
         return "eternal", new_field
 
