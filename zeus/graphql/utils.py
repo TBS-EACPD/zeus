@@ -25,7 +25,7 @@ def _stringify_internal_python_value(val):
 
 def non_serializable_field(func):
     """
-        decorate a resolver
+    decorate a resolver
     """
 
     @functools.wraps(func)
@@ -57,7 +57,7 @@ class HasNonSerializableRecordMixin(graphene.ObjectType):
 
 def genfunc_to_prom(func):
     """
-        turns a function returning a generator into a function returning a promise
+    turns a function returning a generator into a function returning a promise
     """
 
     @functools.wraps(func)
@@ -73,7 +73,7 @@ def genfunc_to_prom(func):
 
 def promise_from_generator(generator):
     """
-        assumes the generator is not yet started
+    assumes the generator is not yet started
     """
     try:
         first_val = next(generator)
@@ -86,7 +86,7 @@ def promise_from_generator(generator):
 
 def _ongoing_gen_to_prom(generator, current_val=None):
     """
-        recursive helper
+    recursive helper
     """
     if inspect.isgenerator(current_val):
         current_val = promise_from_generator(current_val)

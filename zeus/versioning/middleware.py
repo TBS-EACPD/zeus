@@ -23,11 +23,21 @@ class WhodidMiddleware:
                 return mark_whodid(user, *args, **kwargs)
 
             signals.pre_save.connect(
-                wrapped_mark_whodid, dispatch_uid=(self.__class__, request,), weak=False
+                wrapped_mark_whodid,
+                dispatch_uid=(
+                    self.__class__,
+                    request,
+                ),
+                weak=False,
             )
 
         response = self.get_response(request)
 
-        signals.pre_save.disconnect(dispatch_uid=(self.__class__, request,))
+        signals.pre_save.disconnect(
+            dispatch_uid=(
+                self.__class__,
+                request,
+            )
+        )
 
         return response

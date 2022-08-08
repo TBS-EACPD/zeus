@@ -44,7 +44,8 @@ class ScalarDiffObject(DiffObject):
             current_value = current_db_value
 
         joint, before, after = text_compare_inline(
-            get_str_val(previous_value), get_str_val(current_value),
+            get_str_val(previous_value),
+            get_str_val(current_value),
         )
 
         return (joint, before, after)
@@ -174,7 +175,8 @@ class ForeignKeyDiffObject(AsyncDiffObject):
             )
 
         joint, before, after = text_compare_inline(
-            get_str_val(previous_instance), get_str_val(current_instance),
+            get_str_val(previous_instance),
+            get_str_val(current_instance),
         )
 
         return joint, before, after

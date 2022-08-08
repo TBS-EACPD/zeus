@@ -12,7 +12,9 @@ from .diff import CreateDiff, Diff, get_field_diff_for_version_pair
 
 
 class ChangelogEntry(graphene.ObjectType):
-    diffs = List(Diff,)
+    diffs = List(
+        Diff,
+    )
     field_entries = List(ChangelogEntryFieldEntry)
     model_name = graphene.String()
     live_name = graphene.String()

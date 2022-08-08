@@ -50,8 +50,8 @@ class AbstractModelByIdLoader(SingletonDataLoader):
 
 class PrimaryKeyDataLoaderFactory:
     """
-        This ensures the same _class_ for a single model can only be created once. 
-        This is because some consumers dynamically create dataloaders based on models not yet known
+    This ensures the same _class_ for a single model can only be created once.
+    This is because some consumers dynamically create dataloaders based on models not yet known
     """
 
     dataloader_classes_by_model = {}

@@ -13,11 +13,15 @@ class CustomVersionModel(VersionModel):
         get_latest_by = "business_date"
 
     business_date = models.DateTimeField(
-        default=timezone.now, verbose_name="hypothetical last edit date",
+        default=timezone.now,
+        verbose_name="hypothetical last edit date",
     )
 
     edited_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL, related_name="+",
+        settings.AUTH_USER_MODEL,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
     )
 
 
