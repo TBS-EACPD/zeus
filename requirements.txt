@@ -17,16 +17,13 @@ graphene-django==2.10.1
 gunicorn==19.9.0
 ipython==7.2.0
 jedi==0.17.2 # remove after ipython gets fixed
-lxml==4.2.4
 mistune==2.0.3
-numpy==1.16.1
 openpyxl==2.6.0
 psycopg2-binary==2.8.4
 python-dateutil==2.7.3
 pytz==2018.5
 PyYAML==3.13
 qrcode==6.1
-reportlab==3.5.9
 six==1.15.0
 xhtml2pdf==0.2.3
 xlrd==1.2.0
