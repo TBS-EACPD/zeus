@@ -12,6 +12,9 @@ from .graphql_context import GraphQLContext
 from .middleware import get_middleware
 
 
+from graphql_core_promise import PromiseExecutionContext
+
+
 class GraphQLExecutionErrorSet(Exception):
     def __init__(self, graphql_errors):
         self.graphql_errors = graphql_errors
@@ -36,7 +39,7 @@ class RaiseExceptionsMiddleware:
         raise error
 
     def resolve(self, next, root, info, **kwargs):
-        return next(root, info, **kwargs).catch(self.on_error)
+        return next(root, info, **kwargs)
 
 
 class InternalQueryExecutorBase:
@@ -50,7 +53,7 @@ class InternalQueryExecutorBase:
     schema = None
 
     def __init__(self):
-        self.client = Client(self.schema)
+        self.client = Client(self.schema, execution_context_class=PromiseExecutionContext)
         self.dataloaders = {}
 
     def execute_query(
@@ -61,7 +64,13 @@ class InternalQueryExecutorBase:
 
         middleware = [RaiseExceptionsMiddleware(), *get_middleware()]
 
-        resp = self.client.execute(query, root, context, variables, middleware=middleware)
+        resp = self.client.execute(
+            query,
+            root,
+            context,
+            variables,
+            middleware=middleware,
+        )
 
         if "errors" in resp:
             err = GraphQLExecutionErrorSet(resp["errors"])
@@ -69,7 +78,7 @@ class InternalQueryExecutorBase:
         return resp["data"]
 
     def build_query(self, query):
-        validation_errors = validate(self.schema, parse(query))
+        validation_errors = validate(self.schema.graphql_schema, parse(query))
         if validation_errors:
             raise GraphQLError(validation_errors)
 
