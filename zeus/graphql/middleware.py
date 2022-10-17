@@ -1,6 +1,5 @@
 from inspect import isgenerator
 
-from graphql.execution.middleware import make_it_promise
 from promise import is_thenable
 
 from .utils import (
