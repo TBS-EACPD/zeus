@@ -5,7 +5,7 @@ import traceback
 from graphene.test import Client
 
 from graphql.error import GraphQLError
-from graphql.language.base import parse
+from graphql.language.parser import parse
 from graphql.validation import validate
 
 from .graphql_context import GraphQLContext
