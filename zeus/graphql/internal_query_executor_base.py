@@ -7,12 +7,10 @@ from graphene.test import Client
 from graphql.error import GraphQLError
 from graphql.language.parser import parse
 from graphql.validation import validate
+from graphql_core_promise import PromiseExecutionContext
 
 from .graphql_context import GraphQLContext
 from .middleware import get_middleware
-
-
-from graphql_core_promise import PromiseExecutionContext
 
 
 class GraphQLExecutionErrorSet(Exception):
