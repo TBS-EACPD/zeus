@@ -32,7 +32,7 @@ def convert_enum_list_to_dict(models, enum_list):
     if not enum_list or not models:
         return None
     models_by_name = {model.__name__: model for model in models}
-    parsed_pairs = [enum_val.split("__") for enum_val in enum_list]
+    parsed_pairs = [enum_entry.value.split("__") for enum_entry in enum_list]
     fields_by_model = defaultdict(list)
     for (model_name, field_name) in parsed_pairs:
         model_cls = models_by_name[model_name]
